@@ -1,6 +1,6 @@
 Summary: Future Composer input plugin for XMMS.
 Name: xmms-fc
-Version: 0.5.2
+Version: 0.5.3
 Release: 1
 Source:	xmms-fc-%{version}.tar.gz
 License: GPL
