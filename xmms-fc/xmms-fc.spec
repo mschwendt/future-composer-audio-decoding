@@ -1,39 +1,44 @@
+%define plugindir %(xmms-config --input-plugin-dir)
+
 Summary: Future Composer input plugin for XMMS.
 Name: xmms-fc
 Version: 0.5.3
-Release: 1
-Source:	xmms-fc-%{version}.tar.gz
+Release: 2
+URL: http://xmms-fc.sourceforge.net/
 License: GPL
+Source:	http://download.sourceforge.net/xmms-fc/xmms-fc-0.5.3.tar.bz2
 Group: Applications/Multimedia
-URL: http://sourceforge.net/projects/xmms-fc/
-BuildRoot: %{_tmppath}/%{name}-buildroot
-BuildPrereq: xmms-devel
-Requires: xmms >= 1.0.0
-Prefix: %{_prefix}
+Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot-%(%{__id_u} -n)
+BuildRequires: xmms-devel, gtk+-devel
+Requires: xmms
 
 %description
 This is an input plugin for XMMS which can play back Future Composer
 music files from AMIGA. Song-length detection and seek are
 implemented, too.
 
-%prep
-rm -rf %{buildroot}
 
+%prep
 %setup -q -n xmms-fc-%{version}
 
+
 %build
-CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{prefix}
-make
+%configure
+make %{?_smp_mflags}
+
 
 %install
-mkdir -p %{buildroot}
-make DESTDIR=%{buildroot} install
+rm -rf $RPM_BUILD_ROOT
+mkdir -p $RPM_BUILD_ROOT
+make DESTDIR=$RPM_BUILD_ROOT install
+
 
 %clean
-rm -rf %{buildroot}
+rm -rf $RPM_BUILD_ROOT
+
 
 %files
-%defattr(-,root,root)
+%defattr(-,root,root,-)
 %doc COPYING README src/FC.README
-%{prefix}/lib/xmms/Input/libfc.so
-%{prefix}/lib/xmms/Input/libfc.la
+%{plugindir}/libfc.so
+%exclude %{plugindir}/libfc.la
