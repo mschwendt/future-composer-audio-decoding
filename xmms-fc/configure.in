@@ -1,9 +1,5 @@
-dnl Run `aclocal' to create macro file (if missing).
-dnl Run `automake -a -c' to copy macro files (if missing).
-dnl Run `autoconf' to create `configure' script.
-
 AC_INIT(src/FC.cpp)
-AM_INIT_AUTOMAKE(xmms-fc, 0.5.3)
+AM_INIT_AUTOMAKE(xmms-fc, 0.5.4)
 AM_CONFIG_HEADER(src/Config.h)
 
 AC_CANONICAL_HOST
@@ -61,8 +57,8 @@ AM_PROG_LIBTOOL
 dnl FC_PROG_LIBTOOL
 dnl Hack to let C-specific libtool use C++ compiler for collecting
 dnl inter-library dependencies. Beware!
-$CP libtool libtool.orig
-$CAT libtool.orig | ${SED} s/^CC=.*/CC=\"${CXX}\"/ > libtool
+dnl $CP libtool libtool.orig
+dnl $CAT libtool.orig | ${SED} s/^CC=.*/CC=\"${CXX}\"/ > libtool
 
 FC_CHECK_BOOL
 FC_CHECK_IOS_BINARY
@@ -72,7 +68,8 @@ AC_CHECK_HEADERS(cstring string.h fstream fstream.h)
 fc_new_cpp_headers="yes"
 if test "$ac_cv_header_cstring" = no ||
    test "$ac_cv_header_fstream" = no; then
-    AC_DEFINE(FC_HAVE_OLD_CPP_HEADERS)
+	AC_DEFINE([FC_HAVE_OLD_CPP_HEADERS], 1, 
+        [Define only if old non-standard C++ headers are available.])
     fc_new_cpp_headers="no"
 fi
 if test "$fc_new_cpp_headers" = no; then

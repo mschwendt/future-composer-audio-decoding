@@ -2,7 +2,7 @@ dnl -------------------------------------------------------------------------
 dnl Try to find a file (or one of more files in a list of dirs).
 dnl -------------------------------------------------------------------------
 
-AC_DEFUN(FC_FIND_FILE,
+AC_DEFUN([FC_FIND_FILE],
 [
     $3=""
     for i in $2;
@@ -21,7 +21,7 @@ dnl -------------------------------------------------------------------------
 dnl Check whether compiler has a working ``bool'' type.
 dnl -------------------------------------------------------------------------
 
-AC_DEFUN(FC_CHECK_BOOL,
+AC_DEFUN([FC_CHECK_BOOL],
 [
     AC_MSG_CHECKING([for bool])
     AC_CACHE_VAL(fc_cv_have_bool,
@@ -35,7 +35,7 @@ AC_DEFUN(FC_CHECK_BOOL,
     ])
     AC_MSG_RESULT($fc_cv_have_bool)
     if test "$fc_cv_have_bool" = yes; then
-		AC_DEFINE(FC_HAVE_BOOL)
+	AC_DEFINE([FC_HAVE_BOOL], 1, [Define if your compiler supports type ``bool''. If not, a user-defined signed integral type will be used.])
     fi
 ])
 
@@ -43,7 +43,7 @@ dnl -------------------------------------------------------------------------
 dnl Check whether C++ library has member ios::bin instead of ios::binary.
 dnl -------------------------------------------------------------------------
 
-AC_DEFUN(FC_CHECK_IOS_BINARY,
+AC_DEFUN([FC_CHECK_IOS_BINARY],
 [
     AC_MSG_CHECKING(whether standard member ios::binary is available)
     AC_CACHE_VAL(fc_cv_have_ios_binary,
@@ -60,7 +60,7 @@ AC_DEFUN(FC_CHECK_IOS_BINARY,
     ])
     AC_MSG_RESULT($fc_cv_have_ios_binary)
     if test "$fc_cv_have_ios_binary" = yes; then
-        AC_DEFINE(FC_HAVE_IOS_BINARY)
+	AC_DEFINE([FC_HAVE_IOS_BINARY], 1, [Define if standard member ``ios::binary'' is available.])
     fi
 ])
 
@@ -68,7 +68,7 @@ dnl -------------------------------------------------------------------------
 dnl Check whether C++ compiler supports the "nothrow allocator".
 dnl -------------------------------------------------------------------------
 
-AC_DEFUN(FC_CHECK_NOTHROW,
+AC_DEFUN([FC_CHECK_NOTHROW],
 [
     AC_MSG_CHECKING(whether nothrow allocator is available)
     AC_CACHE_VAL(fc_cv_have_nothrow,
@@ -82,7 +82,7 @@ AC_DEFUN(FC_CHECK_NOTHROW,
     ])
     AC_MSG_RESULT($fc_cv_have_nothrow)
     if test "$fc_cv_have_nothrow" = yes; then
-        AC_DEFINE(FC_HAVE_NOTHROW)
+	AC_DEFINE([FC_HAVE_NOTHROW], 1, [Define if ``nothrow allocator'' is available.])
     fi
 ])
 
@@ -90,7 +90,7 @@ dnl -------------------------------------------------------------------------
 dnl Pass C++ compiler options to libtool which supports C only.
 dnl -------------------------------------------------------------------------
 
-AC_DEFUN(FC_PROG_LIBTOOL,
+AC_DEFUN([FC_PROG_LIBTOOL],
 [
     fc_save_cc="$CC"
     fc_save_cflags="$CFLAGS"
