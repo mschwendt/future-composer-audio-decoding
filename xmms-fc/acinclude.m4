@@ -49,7 +49,10 @@ AC_DEFUN(FC_CHECK_IOS_BINARY,
     AC_CACHE_VAL(fc_cv_have_ios_binary,
     [
         AC_TRY_COMPILE(
-            [#include <fstream.h>],
+            [
+#include <fstream.h>
+#include <iostream.h>
+            ],
 		    [ifstream myTest("testfile",ios::in|ios::binary);],
 		    [fc_cv_have_ios_binary=yes],
 		    [fc_cv_have_ios_binary=no]

@@ -166,9 +166,9 @@ static bool loadFile(char* fileName)
 #endif
     fileLen = myIn.tellg();
 #ifdef FC_HAVE_NOTHROW
-    if ((fileBuf = new(std::nothrow) ubyte[fileLen+extraFileBufLen]) == 0)
+    if ((fileBuf = new(std::nothrow) ubyte[(long int)fileLen+extraFileBufLen]) == 0)
 #else
-    if ((fileBuf = new ubyte[fileLen+extraFileBufLen]) == 0)
+    if ((fileBuf = new ubyte[(long int)fileLen+extraFileBufLen]) == 0)
 #endif
     {
         fileLen = 0;
@@ -176,7 +176,7 @@ static bool loadFile(char* fileName)
     }
 	
     myIn.seekg(0,ios::beg);
-    myIn.read( fileBuf, fileLen );
+    myIn.read( (char*)fileBuf, fileLen );
 	
 	if ( myIn.bad() )
     {
@@ -273,7 +273,7 @@ static int ip_is_valid_file(char* fileName)
         return 0;
     }
 	
-    myIn.read( magicBuf, 5 );
+    myIn.read( (char*)magicBuf, 5 );
 	
 	if ( myIn.bad() )
     {
