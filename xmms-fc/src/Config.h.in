@@ -7,7 +7,6 @@
    byte first (like Motorola and SPARC, unlike Intel and VAX).  */
 #undef WORDS_BIGENDIAN
 
- 
 /* Define if your compiler supports type ``bool''.
    If not, a user-defined signed integral type will be used.  */
 #undef FC_HAVE_BOOL
