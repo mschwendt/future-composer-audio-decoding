@@ -10,7 +10,7 @@
           Updated automake and configure stuff, makefiles,
           and libstdc++ usage.
         
-        * src/Main.cpp: Fix seek at song-eng.
+        * src/Main.cpp: Fix seek at song-end.
         
 2000-12-19  Michael Schwendt  <sidplay@geocities.com>
 
