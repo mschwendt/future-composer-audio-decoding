@@ -1,4 +1,4 @@
-xmms-fc -- http://sourceforge.net/projects/xmms-fc/
+xmms-fc -- http://xmms-fc.sf.net
 
 This XMMS plug-in is based on an unmaintained piece of code which is
 my `Future Composer Reference Player for Linux'. Because the source
@@ -19,8 +19,8 @@ implementation, it would be very easy to fix the source code,
 whereas it would be very difficult to fix an emulated MC680x0
 machine code binary-only player.
 
-If you still happen to encounter unexpected behaviour, please send
-your bug report to <sidplay AT geocities DOT com> or submit it here:
+If you still happen to encounter unexpected behaviour, please submit
+your bug report here:
 
   http://sourceforge.net/projects/xmms-fc/
 
