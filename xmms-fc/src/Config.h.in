@@ -1,0 +1,56 @@
+/* src/Config.h.in.  Generated automatically from configure.in by autoheader.  */
+
+/* Define if you have the ANSI C header files.  */
+#undef STDC_HEADERS
+
+/* Define if your processor stores words with the most significant
+   byte first (like Motorola and SPARC, unlike Intel and VAX).  */
+#undef WORDS_BIGENDIAN
+
+ 
+/* Define if your compiler supports type ``bool''.
+   If not, a user-defined signed integral type will be used.  */
+#undef FC_HAVE_BOOL
+
+/* Define if standard member ``ios::binary'' is available. */
+#undef FC_HAVE_IOS_BINARY
+
+/* Define if ``nothrow allocator'' is available.  */
+#undef FC_HAVE_NOTHROW
+
+/* Define only if old non-standard C++ headers are available.  */
+#undef FC_HAVE_OLD_CPP_HEADERS
+
+/* The number of bytes in a char.  */
+#undef SIZEOF_CHAR
+
+/* The number of bytes in a int.  */
+#undef SIZEOF_INT
+
+/* The number of bytes in a long int.  */
+#undef SIZEOF_LONG_INT
+
+/* The number of bytes in a short int.  */
+#undef SIZEOF_SHORT_INT
+
+/* Define if you have the <cstring> header file.  */
+#undef HAVE_CSTRING
+
+/* Define if you have the <dlfcn.h> header file.  */
+#undef HAVE_DLFCN_H
+
+/* Define if you have the <fstream> header file.  */
+#undef HAVE_FSTREAM
+
+/* Define if you have the <fstream.h> header file.  */
+#undef HAVE_FSTREAM_H
+
+/* Define if you have the <string.h> header file.  */
+#undef HAVE_STRING_H
+
+/* Name of package */
+#undef PACKAGE
+
+/* Version number of package */
+#undef VERSION
+
