@@ -18,10 +18,12 @@ static GtkWidget *Bits8;
 static GtkWidget *Stereo;
 static GtkWidget *Mono;
 
+static GtkWidget *Sample_48;
 static GtkWidget *Sample_44;
 static GtkWidget *Sample_22;
 static GtkWidget *Sample_11;
 
+static const gint FREQ_SAMPLE_48 = 48000;
 static const gint FREQ_SAMPLE_44 = 44100;
 static const gint FREQ_SAMPLE_22 = 22050;
 static const gint FREQ_SAMPLE_11 = 11025;
@@ -159,6 +161,14 @@ void fc_ip_configure()
 		gtk_widget_show(vbox3);
 		gtk_container_add(GTK_CONTAINER(frequency_Frame), vbox3);
 
+        Sample_48 = gtk_radio_button_new_with_label(sample_group, "48000 Hz");
+		sample_group = gtk_radio_button_group(GTK_RADIO_BUTTON(Sample_48));
+		gtk_object_set_data(GTK_OBJECT(fc_config_window), "Sample_48", Sample_48);
+		gtk_widget_show(Sample_48);
+		gtk_box_pack_start(GTK_BOX(vbox3), Sample_48, TRUE, TRUE, 0);
+		if (fc_myConfig.frequency == FREQ_SAMPLE_48)
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Sample_48), TRUE);
+
 		Sample_44 = gtk_radio_button_new_with_label(sample_group, "44100 Hz");
 		sample_group = gtk_radio_button_group(GTK_RADIO_BUTTON(Sample_44));
 		gtk_object_set_data(GTK_OBJECT(fc_config_window), "Sample_44", Sample_44);
@@ -233,6 +243,8 @@ static void config_ok(GtkWidget * widget, gpointer data)
 	if (GTK_TOGGLE_BUTTON(Mono)->active)
 		fc_myConfig.channels = 1;
 
+	if (GTK_TOGGLE_BUTTON(Sample_48)->active)
+		fc_myConfig.frequency = FREQ_SAMPLE_48;
 	if (GTK_TOGGLE_BUTTON(Sample_44)->active)
 		fc_myConfig.frequency = FREQ_SAMPLE_44;
 	if (GTK_TOGGLE_BUTTON(Sample_22)->active)
