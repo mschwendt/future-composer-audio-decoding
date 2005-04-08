@@ -1,6 +1,6 @@
 //
 // AMIGA Future Composer music player plugin for XMMS
-// Copyright (C) 2000 Michael Schwendt <sidplay@geocities.com>
+// Copyright (C) 2000 Michael Schwendt <mschwendt@users.sf.net>
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -461,6 +461,14 @@ static int ip_get_time(void)
 
 static void ip_get_song_info(char *fileName, char **title, int *length)
 {
+    gchar* songTitle;
+    gchar* pathSepPos = strrchr( fileName, '/' );
+    if ( pathSepPos!=0 && pathSepPos[1]!=0 )  // found file name
+        songTitle = pathSepPos+1;
+    else
+        songTitle = fileName;
+    *title = g_strdup( songTitle );
+    *length = -1;
 }
 
 }  // extern "C"
