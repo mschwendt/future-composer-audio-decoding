@@ -176,7 +176,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 AUTOMAKE_OPTIONS = foreign
 SUBDIRS = src
-EXTRA_DIST = xmms-fc.spec xmms-fc.spec.in
+EXTRA_DIST = bmp-fc.spec bmp-fc.spec.in
 all: all-recursive
 
 .SUFFIXES:
