@@ -79,7 +79,7 @@ InputPlugin iplugin =
 {
     NULL,
     NULL,
-    "Future Composer Player " VERSION,
+    "Future Composer Player",
     ip_init,
     fc_ip_about,
     fc_ip_configure,

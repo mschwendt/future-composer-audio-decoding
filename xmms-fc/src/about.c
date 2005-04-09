@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include "Config.h"
 
 static GtkWidget *about_window = NULL;
 
@@ -36,7 +37,7 @@ void fc_ip_about()
         gtk_container_border_width(GTK_CONTAINER(hbox1), 5);
         gtk_widget_realize(about_window);
         
-        label1 = gtk_label_new("Future Composer player plugin\nhttp://xmms-fc.sourceforge.net\nCreated by Michael Schwendt.\n\nMuch room for improvement.\nHave a go if you like to.\n");
+        label1 = gtk_label_new("Future Composer player plugin\nVersion " VERSION "\nhttp://xmms-fc.sourceforge.net\nCreated by Michael Schwendt.\n\nMuch room for improvement.\nHave a go if you like to.\n");
         gtk_object_set_data(GTK_OBJECT(about_window), "label1", label1);
         gtk_widget_show(label1);
         gtk_box_pack_start(GTK_BOX(hbox1), label1, TRUE, TRUE, 0);
