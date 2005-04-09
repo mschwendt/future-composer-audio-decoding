@@ -1,13 +1,13 @@
 // --------------------------------------------------------------------------
 // AMIGA Future Composer v1.0 - v1.4 music player
 //
-// Implemented in 1997 by Michael Schwendt (sidplay@geocities.com).
+// Implemented in 1997 by Michael Schwendt (mschwendt@users.sf.net).
 //
 // Based mainly on hand-written notes from 1990 which were made upon fixing
 // a variety of bugs in the original player source code which was released
 // with Future Composer.
 //
-//  http://www.geocities.com/SiliconValley/Lakes/5147/mod/
+//  http://xmms-fc.sf.net/
 //
 // No effort has been put into making this implementation elegant or
 // efficient in either way.
