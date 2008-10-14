@@ -51,7 +51,7 @@ struct _GstFCDec
 
   guchar *filebuf;
   gint filebufsize, filelen;
-  guint64 totalbytes;
+  gint64 totalbytes;
 
   gulong blocksize;
 

@@ -1,3 +1,8 @@
+2008-10-14    Michael Schwendt <mschwendt@users.sf.net>
+
+	* src/gstfcdec.*
+	  - Add gst_fcdec_handle_seek() for seeking.
+
 2008-10-12    Michael Schwendt <mschwendt@users.sf.net>
 
 	* Initial import.

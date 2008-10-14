@@ -311,7 +311,6 @@ play_loop (GstPad *pad)
 
 done:
   gst_object_unref (fcdec);
-
   return;
 
   /* ERRORS */
@@ -367,6 +366,44 @@ start_play_file(GstFCDec *fcdec)
 
     return gst_pad_start_task (fcdec->srcpad,
                                (GstTaskFunction) play_loop, fcdec->srcpad);
+}
+
+static gboolean
+gst_fcdec_handle_seek (GstFCDec *fcdec, GstEvent *event)
+{
+  GstSeekType starttype, stoptype;
+  GstSeekFlags flags;
+  GstFormat format;
+  gdouble rate;
+  gint64 start, stop, jumppos;
+
+  gst_event_parse_seek (event, &rate, &format, &flags, &starttype, &start,
+      &stoptype, &stop);
+
+  // TODO: convert this if necessary
+  if (format != GST_FORMAT_TIME) {
+    GST_DEBUG_OBJECT (fcdec, "only support seeks in TIME format");
+    return FALSE;
+  }
+
+  gst_pad_push_event (fcdec->srcpad, gst_event_new_flush_start ());
+  FC_init(fcdec->filebuf,fcdec->filelen,0,0);
+
+  format = GST_FORMAT_BYTES;
+  gst_fcdec_src_convert (fcdec->srcpad,
+                         GST_FORMAT_TIME, start, &format, &fcdec->totalbytes);
+  jumppos = start;
+  while (jumppos>=0) {
+      FC_play();
+      jumppos -= 20*1000*1000;
+  };
+  gst_pad_push_event (fcdec->srcpad, gst_event_new_flush_stop ());
+  gst_pad_push_event (fcdec->srcpad,
+                      gst_event_new_new_segment (FALSE, rate, GST_FORMAT_TIME, start, -1, start));
+
+  gst_pad_start_task (fcdec->srcpad,
+                      (GstTaskFunction) play_loop, fcdec->srcpad);
+  return TRUE;
 }
 
 static gboolean
@@ -513,7 +550,8 @@ gst_fcdec_src_event (GstPad *pad, GstEvent *event)
 
   switch (GST_EVENT_TYPE (event)) {
     case GST_EVENT_SEEK:
-        //res = gst_fcdec_handle_seek (fcdec, event);
+        res = gst_fcdec_handle_seek (fcdec, event);
+        gst_event_unref( event);
         break;
     default:
         res = gst_pad_event_default (pad, event);
