@@ -114,11 +114,12 @@ AC_DEFUN([PKG_CHECK_MODULES], [
     AC_PATH_PROG(PKG_CONFIG, pkg-config, "")
   fi
 
-  if test "$PKG_CONFIG" = "no"; then
+  if test -z "$PKG_CONFIG"; then
      echo "*** The pkg-config script could not be found. Make sure it is"
      echo "*** in your path, or set the PKG_CONFIG environment variable"
      echo "*** to the full path to pkg-config."
      echo "*** Or see http://www.freedesktop.org/software/pkgconfig to get pkg-config."
+	 exit -1
   else
      PKG_CONFIG_MIN_VERSION=0.9.0
      if $PKG_CONFIG --atleast-pkgconfig-version $PKG_CONFIG_MIN_VERSION; then

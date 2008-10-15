@@ -1,3 +1,8 @@
+2008-10-15    Michael Schwendt <mschwendt@users.sf.net>
+
+	* acinclude.m4, configure.in
+	  - Missing pkg-config and GStreamer API is a fatal error.
+
 2008-10-14    Michael Schwendt <mschwendt@users.sf.net>
 
 	* src/gstfcdec.*

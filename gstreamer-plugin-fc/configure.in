@@ -27,10 +27,8 @@ GST_MAJORMINOR=0.10
 GST_REQUIRED=0.10.0
 GSTPB_REQUIRED=0.10.0
 
-PKG_CHECK_MODULES(GST, \
-  gstreamer-$GST_MAJORMINOR >= $GST_REQUIRED,
+PKG_CHECK_MODULES(GST,gstreamer-$GST_MAJORMINOR >= $GST_REQUIRED,
   HAVE_GST=yes,HAVE_GST=no)
-
 if test "x$GST_LIBS" != "x"; then
     CFLAGS="$CFLAGS $GST_CFLAGS"
     CXXFLAGS="$CXXFLAGS $GST_CFLAGS"
@@ -38,6 +36,7 @@ if test "x$GST_LIBS" != "x"; then
     AC_MSG_RESULT(yes)
 else
     AC_MSG_RESULT(no)
+    AC_MSG_ERROR(GStreamer development files not found.)
 fi
 
 
