@@ -5,6 +5,8 @@
 
 2008-10-14    Michael Schwendt <mschwendt@users.sf.net>
 
+	* Release: 0.1
+	
 	* src/gstfcdec.*
 	  - Add gst_fcdec_handle_seek() for seeking.
 
