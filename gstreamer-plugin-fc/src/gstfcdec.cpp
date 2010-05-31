@@ -346,6 +346,9 @@ start_play_file(GstFCDec *fcdec)
         return FALSE;
     }
 
+    GstTagList *list = gst_tag_list_new();
+    gst_element_found_tags_for_pad( GST_ELEMENT_CAST(fcdec), fcdec->srcpad, list);
+
     if (!fcdec_negotiate (fcdec)) {
         GST_ELEMENT_ERROR (fcdec, CORE, NEGOTIATION,
                            ("Could not negotiate format"), ("Could not negotiate format"));
