@@ -49,8 +49,10 @@ struct _GstFCDec
 
   GstPad *sinkpad, *srcpad;
 
+  void *decoder;
+
   guchar *filebuf;
-  gint filebufsize, filelen;
+  guint filebufsize, filelen;
   gint64 totalbytes;
 
   gulong blocksize;

@@ -35,18 +35,11 @@
  */
 
 #include <string.h>
-
+#include <fc14audiodecoder.h>
 #include <gst/gst.h>
 
-#include "Config.h"
+#include "config.h"
 #include "gstfcdec.h"
-#include "FC.h"
-#include "MyTypes.h"
-
-// Ugly due to the old code that comes with my FC reference implementation.
-extern void mixerFillBuffer( void*, udword );
-extern void mixerInit(udword,int,int,uword);
-// ---
 
 #define OUR_MIME_TYPE   "audio/x-futcomp"
 
@@ -83,8 +76,8 @@ static GstStaticPadTemplate src_templ = GST_STATIC_PAD_TEMPLATE ("src",
 GST_BOILERPLATE (GstFCDec, gst_fcdec, GstElement, GST_TYPE_ELEMENT);
 
 static void gst_fcdec_base_init (gpointer g_class);
-static void gst_fcdec_class_init (GstFCDec *gclass);
-static void gst_fcdec_init (GstFCDec *fcdec);
+static void gst_fcdec_class_init (GstFCDecClass *gclass);
+/*static void gst_fcdec_init (GstFCDec *fcdec);*/
 static void gst_fcdec_finalize (GObject *object);
 
 static GstFlowReturn gst_fcdec_chain (GstPad *pad, GstBuffer *buf);
@@ -154,7 +147,7 @@ gst_fcdec_class_init (GstFCDecClass *gclass)
  * set pad callback functions
  * initialize instance structure
  */
-static void
+void
 gst_fcdec_init (GstFCDec *fcdec, GstFCDecClass *gclass)
 {
   fcdec->sinkpad = gst_pad_new_from_static_template (&sink_templ, "sink");
@@ -172,6 +165,8 @@ gst_fcdec_init (GstFCDec *fcdec, GstFCDecClass *gclass)
   //gst_pad_set_active (fcdec->srcpad, TRUE);
   gst_element_add_pad (GST_ELEMENT (fcdec), fcdec->srcpad);
 
+  fcdec->decoder = fc14dec_new();
+  
   fcdec->filebuf = (guchar *) g_malloc (DEFAULT_MAXSIZE);
   if (fcdec->filebuf) {
       fcdec->filebufsize = DEFAULT_MAXSIZE;
@@ -191,6 +186,7 @@ gst_fcdec_finalize (GObject *object)
   GstFCDec *fcdec = GST_FCDEC (object);
 
   g_free (fcdec->filebuf);
+  fc14dec_delete(fcdec->decoder);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -276,9 +272,9 @@ play_loop (GstPad *pad)
   out = gst_buffer_new_and_alloc (fcdec->blocksize);
   gst_buffer_set_caps (out, GST_PAD_CAPS (pad));
 
-  mixerFillBuffer(GST_BUFFER_DATA(out), GST_BUFFER_SIZE(out));
+  fc14dec_buffer_fill(fcdec->decoder,GST_BUFFER_DATA(out),GST_BUFFER_SIZE(out));
 
-  if (FC_songEnd) {
+  if (fc14dec_song_end(fcdec->decoder)) {
       gst_pad_pause_task (pad);
       gst_pad_push_event (pad, gst_event_new_eos ());
       goto done;
@@ -340,7 +336,7 @@ static gboolean
 start_play_file(GstFCDec *fcdec)
 {
     if (!fcdec->filebuf || !fcdec->filelen ||
-        !FC_init(fcdec->filebuf,fcdec->filelen,0,0) ) {
+        !fc14dec_init(fcdec->decoder,fcdec->filebuf,fcdec->filelen) ) {
         GST_ELEMENT_ERROR (fcdec, LIBRARY, INIT,
                            ("Could not load FC module"), ("Could not load FC module"));
         return FALSE;
@@ -355,14 +351,9 @@ start_play_file(GstFCDec *fcdec)
         return FALSE;
     }
 
-    // Determine duration with a dry-run till song-end.
-    mixerInit(fcdec->frequency,fcdec->bits,fcdec->channels,fcdec->zerosample);
-    do {
-        FC_play();
-        fcdec->nsecs += 20*1000*1000;
-    }
-    while ( !FC_songEnd );
-    FC_init(fcdec->filebuf,fcdec->filelen,0,0);
+    /* printf("format = %s\n",fc14dec_format_name(fcdec->decoder)); */
+    fcdec->nsecs = 1000*1000*fc14dec_duration(fcdec->decoder);
+    fc14dec_mixer_init(fcdec->decoder,fcdec->frequency,fcdec->bits,fcdec->channels,fcdec->zerosample);
     
     gst_pad_push_event (fcdec->srcpad,
                         gst_event_new_new_segment (FALSE, 1.0, GST_FORMAT_TIME, 0, -1, 0));
@@ -390,16 +381,13 @@ gst_fcdec_handle_seek (GstFCDec *fcdec, GstEvent *event)
   }
 
   gst_pad_push_event (fcdec->srcpad, gst_event_new_flush_start ());
-  FC_init(fcdec->filebuf,fcdec->filelen,0,0);
-
+    
   format = GST_FORMAT_BYTES;
   gst_fcdec_src_convert (fcdec->srcpad,
                          GST_FORMAT_TIME, start, &format, &fcdec->totalbytes);
-  jumppos = start;
-  while (jumppos>=0) {
-      FC_play();
-      jumppos -= 20*1000*1000;
-  };
+
+  fc14dec_seek(fcdec->decoder, start/(1000*1000));
+
   gst_pad_push_event (fcdec->srcpad, gst_event_new_flush_stop ());
   gst_pad_push_event (fcdec->srcpad,
                       gst_event_new_new_segment (FALSE, rate, GST_FORMAT_TIME, start, -1, start));
@@ -570,13 +558,13 @@ gst_fcdec_src_query (GstPad *pad, GstQuery *query)
 {
   gboolean res = TRUE;
   GstFCDec *fcdec;
+  GstFormat format;
 
   fcdec = GST_FCDEC (gst_pad_get_parent (pad));
 
   switch (GST_QUERY_TYPE (query)) {
     case GST_QUERY_POSITION:
     {
-      GstFormat format;
       gint64 current;
 
       gst_query_parse_position (query, &format, NULL);
@@ -589,7 +577,6 @@ gst_fcdec_src_query (GstPad *pad, GstQuery *query)
       break;
     }
   case GST_QUERY_DURATION:
-      GstFormat format;
       gst_query_parse_duration (query, &format, NULL);
       GST_DEBUG_OBJECT(fcdec, "nsec song length: %" G_GUINT64_FORMAT, fcdec->nsecs);
       gint64 val;
@@ -669,24 +656,15 @@ gst_fcdec_type_find (GstTypeFind * tf, gpointer ignore)
     if (data == NULL)
         return;
 
-    // See FC.cpp
-    // Check for "SMOD" ID (Future Composer 1.0 to 1.3).
-    bool isSMOD = (data[0]==0x53 && data[1]==0x4D &&
-                   data[2]==0x4F && data[3]==0x44 &&
-                   data[4]==0x00);
-    
-    // Check for "FC14" ID (Future Composer 1.4).
-    bool isFC14 = (data[0]==0x46 && data[1]==0x43 &&
-                   data[2]==0x31 && data[3]==0x34 &&
-                   data[4]==0x00);
-    
-    if (isSMOD || isFC14) {
+    void *decoder = fc14dec_new();
+    if (fc14dec_detect(decoder,data,5)) {
         gchar ourtype[] = OUR_MIME_TYPE;
         GST_DEBUG ("suggesting mime type %s", ourtype);
         GstCaps *caps = gst_caps_new_simple (ourtype, NULL);
         gst_type_find_suggest (tf, GST_TYPE_FIND_MAXIMUM, caps);
         gst_caps_unref (caps);
     }
+    fc14dec_delete(decoder);
 }
 
 /* entry point to initialize the plug-in
