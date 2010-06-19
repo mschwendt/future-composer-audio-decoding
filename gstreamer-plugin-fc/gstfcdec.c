@@ -77,7 +77,7 @@ GST_BOILERPLATE (GstFCDec, gst_fcdec, GstElement, GST_TYPE_ELEMENT);
 
 static void gst_fcdec_base_init (gpointer g_class);
 static void gst_fcdec_class_init (GstFCDecClass *gclass);
-/*static void gst_fcdec_init (GstFCDec *fcdec);*/
+static void gst_fcdec_init (GstFCDec *fcdec, GstFCDecClass *gclass);
 static void gst_fcdec_finalize (GObject *object);
 
 static GstFlowReturn gst_fcdec_chain (GstPad *pad, GstBuffer *buf);
@@ -147,7 +147,7 @@ gst_fcdec_class_init (GstFCDecClass *gclass)
  * set pad callback functions
  * initialize instance structure
  */
-void
+static void
 gst_fcdec_init (GstFCDec *fcdec, GstFCDecClass *gclass)
 {
   fcdec->sinkpad = gst_pad_new_from_static_template (&sink_templ, "sink");

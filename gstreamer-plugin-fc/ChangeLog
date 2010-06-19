@@ -1,3 +1,13 @@
+2010-06-19    Michael Schwendt <mschwendt@users.sf.net>
+
+	* Release: 0.2
+
+	* gstfcdec.*
+	  - Use C API of libfc14audiodecoder.
+
+	* src/*
+	  - Delete due to external library usage.
+	
 2010-05-31    Michael Schwendt <mschwendt@users.sf.net>
 
 	* src/gstfcdec.cpp
