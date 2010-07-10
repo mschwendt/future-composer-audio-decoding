@@ -1,46 +1,21 @@
-AC_INIT(src/FC.cpp)
-AM_INIT_AUTOMAKE(xmms-fc, 0.5.4)
-AM_CONFIG_HEADER(src/Config.h)
-
-AC_CANONICAL_HOST
-AC_PREFIX_DEFAULT(/usr)
-AC_EXEEXT()
+AC_INIT
+AC_CONFIG_SRCDIR([src/main.c])
+AM_INIT_AUTOMAKE(xmms-fc, 0.6)
+AM_DISABLE_STATIC
+AM_PROG_LIBTOOL
+AM_CONFIG_HEADER([src/config.h])
+AC_CONFIG_MACRO_DIR([m4])
 
 AC_PROG_CC
-AC_LANG_C
-
+AC_LANG([C])
 AC_C_BIGENDIAN
-dnl echo $ac_cv_c_bigendian
-dnl if ! test "$ac_cv_c_bigendian" = yes; then
-dnl  AC_DEFINE(WORDS_LITTLEENDIAN)
-dnl fi
-
-AC_CHECK_SIZEOF(char)
-AC_CHECK_SIZEOF(short int)
-AC_CHECK_SIZEOF(int)
-AC_CHECK_SIZEOF(long int)
-
-AC_HEADER_STDC
-
-dnl Check for GTK+
-AM_PATH_GTK(1.2.0,,
-  AC_MSG_ERROR(Test for GTK failed.), gthread)
-
-AC_PATH_PROG(CAT,cat,no)
-if test "$CAT" = no; then
-    AC_MSG_ERROR(["cat" not found!]);
-fi
-
-AC_PATH_PROG(CP,cp,no)
-if test "$CP" = no; then
-    AC_MSG_ERROR(["cp" not found!]);
-fi
-
 AC_PATH_PROG(RM,rm,rm)
 
-AC_PATH_PROG(SED,sed,no)
-if test "$SED" = no; then
-    AC_MSG_ERROR(["sed" not found!]);
+AC_CHECK_HEADER(fc14audiodecoder.h,
+    [],[AC_MSG_ERROR([fc14audiodecoder.h not found])])
+AC_CHECK_LIB(fc14audiodecoder,fc14dec_new)
+if ! test "$ac_cv_lib_fc14audiodecoder_fc14dec_new" = yes; then
+    AC_MSG_ERROR([libfc14audiodecoder not found])
 fi
 
 AC_PATH_PROG(XMMSCFG, xmms-config, "no")
@@ -48,39 +23,9 @@ if test "$XMMSCFG" = no; then
     AC_MSG_ERROR([xmms-config not found!]);
 fi
 
-AC_PROG_CXX
-AC_LANG_CPLUSPLUS
+dnl Check for GTK+
+AM_PATH_GTK(1.2.0,,
+  AC_MSG_ERROR(Test for GTK failed.), gthread)
 
-AM_DISABLE_STATIC
-dnl Initialize libtool.
-AM_PROG_LIBTOOL
-dnl FC_PROG_LIBTOOL
-dnl Hack to let C-specific libtool use C++ compiler for collecting
-dnl inter-library dependencies. Beware!
-dnl $CP libtool libtool.orig
-dnl $CAT libtool.orig | ${SED} s/^CC=.*/CC=\"${CXX}\"/ > libtool
-
-FC_CHECK_BOOL
-FC_CHECK_IOS_BINARY
-FC_CHECK_NOTHROW
-
-AC_CHECK_HEADERS(cstring string.h fstream fstream.h)
-fc_new_cpp_headers="yes"
-if test "$ac_cv_header_cstring" = no ||
-   test "$ac_cv_header_fstream" = no; then
-	AC_DEFINE([FC_HAVE_OLD_CPP_HEADERS], 1, 
-        [Define only if old non-standard C++ headers are available.])
-    fc_new_cpp_headers="no"
-fi
-if test "$fc_new_cpp_headers" = no; then
-    if test "$ac_cv_header_cstring" = no ||
-       test "$ac_cv_header_fstream" = no; then
-        AC_MSG_ERROR(
-[Standard C++ library include files not found!]
-        );
-    fi
-fi
-
-AC_SUBST(CXXFLAGS)
-
-AC_OUTPUT(Makefile src/Makefile xmms-fc.spec)
+AC_CONFIG_FILES([Makefile src/Makefile])
+AC_OUTPUT

@@ -1,3 +1,11 @@
+2010-07-10  Michael Schwendt  <mschwendt@users.sf.net>
+
+	* src, src/Main.cpp: remove C++ files and decoder backend
+	* src/main.c: copy from Main.cpp, turn into C,
+	  use libfc14audiodecoder API
+	* src/Config.h.in: rename to lower-case config.h.in
+	* xmms.spec*: removed (don't want to maintain them here)
+
 2004-07-07  Michael Schwendt  <mschwendt@users.sf.net>
 
 	* Version 0.5.4.
