@@ -240,8 +240,6 @@ static void config_ok(GtkWidget * widget, gpointer data)
 		fc_myConfig.frequency = FREQ_SAMPLE_44;
 	if (GTK_TOGGLE_BUTTON(Sample_22)->active)
 		fc_myConfig.frequency = FREQ_SAMPLE_22;
-	if (GTK_TOGGLE_BUTTON(Sample_11)->active)
-		fc_myConfig.frequency = FREQ_SAMPLE_11;
 
 	filename = g_strconcat(g_get_home_dir(), "/.xmms/config", NULL);
 	cfg = xmms_cfg_open_file(filename);
