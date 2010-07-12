@@ -1,3 +1,8 @@
+2010-07-12  Michael Schwendt  <mschwendt@users.sf.net>
+
+	* Version 0.6.
+	* src/configure.c: remove 11.025 kHz, too low for LamePaula mixer
+
 2010-07-10  Michael Schwendt  <mschwendt@users.sf.net>
 
 	* src, src/Main.cpp: remove C++ files and decoder backend

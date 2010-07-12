@@ -26,7 +26,6 @@ static GtkWidget *Sample_11;
 static const gint FREQ_SAMPLE_48 = 48000;
 static const gint FREQ_SAMPLE_44 = 44100;
 static const gint FREQ_SAMPLE_22 = 22050;
-static const gint FREQ_SAMPLE_11 = 11025;
 
 void fc_ip_load_config()
 {
@@ -184,14 +183,6 @@ void fc_ip_configure()
 		gtk_box_pack_start(GTK_BOX(vbox3), Sample_22, TRUE, TRUE, 0);
 		if (fc_myConfig.frequency == FREQ_SAMPLE_22)
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Sample_22), TRUE);
-
-		Sample_11 = gtk_radio_button_new_with_label(sample_group, "11025 Hz");
-		sample_group = gtk_radio_button_group(GTK_RADIO_BUTTON(Sample_11));
-		gtk_object_set_data(GTK_OBJECT(fc_config_window), "Sample_11", Sample_11);
-		gtk_widget_show(Sample_11);
-		gtk_box_pack_start(GTK_BOX(vbox3), Sample_11, TRUE, TRUE, 0);
-		if (fc_myConfig.frequency == FREQ_SAMPLE_11)
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(Sample_11), TRUE);
 
 		Quality_Label = gtk_label_new("Quality");
 		gtk_object_set_data(GTK_OBJECT(fc_config_window), "Quality_Label", Quality_Label);
