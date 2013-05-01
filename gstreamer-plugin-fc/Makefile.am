@@ -7,9 +7,17 @@ dist-hook:
 
 EXTRA_DIST = m4 config.h.in
 
+if GST1_COND
+    GST1_MAYBE = gst1
+endif
+SUBDIRS = $(GST1_MAYBE)
+
 plugindir = @GST_PLUGIN_DIR@
 
-plugin_LTLIBRARIES = libgstfcdec.la
+plugin_LTLIBRARIES = 
+if GST_COND
+plugin_LTLIBRARIES += libgstfcdec.la
+endif
 
 libgstfcdec_la_LDFLAGS = @GST_PLUGIN_LDFLAGS@
 

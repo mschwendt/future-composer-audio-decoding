@@ -1,3 +1,15 @@
+2013-05-01  Michael Schwendt <mschwendt@users.sf.net>
+
+	* acinclude.m4, configure.ac, Makefile.am, gst1/Makefile.am
+	  - Update pkgconfig checks and add conditional builds.
+
+	* gst1/*
+	  - Introduce plug-in for GStreamer 1.0.x API.
+
+2013-04-26  Michael Schwendt <mschwendt@users.sf.net>
+
+	* Autotools refresh (configure.ac rename and more).
+
 2010-06-19    Michael Schwendt <mschwendt@users.sf.net>
 
 	* Release: 0.2
