@@ -575,7 +575,6 @@ gst_fcdec_src_event (GstPad *pad, GstObject *parent, GstEvent *event)
         res = gst_pad_event_default (pad, parent, event);
         break;
   }
-  //  gst_object_unref (fcdec);
 
   return res;
 }
