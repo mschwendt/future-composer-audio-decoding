@@ -440,7 +440,6 @@ gst_fcdec_sink_event (GstPad *pad, GstObject *parent, GstEvent *event)
       ret = gst_pad_push_event (fcdec->srcpad, event);
       break;
     default:
-      printf("GST_EVENT_???\n");
       ret = gst_pad_event_default (pad, parent, event);
       break;
   }
