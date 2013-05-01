@@ -358,10 +358,6 @@ start_play_file(GstFCDec *fcdec)
         return FALSE;
     }
 
-    // TODO: undefined symbol?
-    //    GstTagList *list = gst_tag_list_new_empty();
-    //    gst_element_found_tags_for_pad( GST_ELEMENT_CAST(fcdec), fcdec->srcpad, list);
-
     if (!fcdec_negotiate (fcdec)) {
         GST_ELEMENT_ERROR (fcdec, CORE, NEGOTIATION,
                            ("Could not negotiate format"), ("Could not negotiate format"));
