@@ -145,15 +145,10 @@ gst_fcdec_init (GstFCDec *fcdec)
   GST_PAD_SET_PROXY_CAPS (fcdec->sinkpad);
   gst_element_add_pad (GST_ELEMENT (fcdec), fcdec->sinkpad);
 
-  //gst_pad_set_setcaps_function (fcdec->sinkpad, gst_fcdec_set_caps);
-  //gst_pad_set_getcaps_function (fcdec->sinkpad, gst_pad_proxy_getcaps);
-
   fcdec->srcpad = gst_pad_new_from_static_template (&src_factory, "src");
   gst_pad_set_event_function (fcdec->srcpad, gst_fcdec_src_event);
   gst_pad_set_query_function (fcdec->srcpad, gst_fcdec_src_query);
   gst_pad_use_fixed_caps (fcdec->srcpad);
-  //GST_PAD_SET_PROXY_CAPS (fcdec->srcpad);
-  //gst_pad_set_active (fcdec->srcpad, TRUE);
   gst_element_add_pad (GST_ELEMENT (fcdec), fcdec->srcpad);
 
   fcdec->decoder = fc14dec_new();
@@ -658,20 +653,6 @@ gst_fcdec_get_property (GObject * object, guint prop_id,
 }
 
 /* GstElement vmethod implementations */
-
-/* this function handles the link with other elements */
-static gboolean
-gst_fcdec_set_caps (GstPad * pad, GstCaps * caps)
-{
-  GstFCDec *fcdec;
-  GstPad *otherpad;
-
-  fcdec = GST_FCDEC (gst_pad_get_parent (pad));
-  otherpad = (pad == fcdec->srcpad) ? fcdec->sinkpad : fcdec->srcpad;
-  gst_object_unref (fcdec);
-
-  return gst_pad_set_caps (otherpad, caps);
-}
 
 static void
 gst_fcdec_type_find (GstTypeFind * tf, gpointer ignore)
