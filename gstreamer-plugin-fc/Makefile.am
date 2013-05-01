@@ -14,6 +14,8 @@ SUBDIRS = $(GST1_MAYBE)
 
 plugindir = @GST_PLUGIN_DIR@
 
+AM_CPPFLAGS = @GST_CFLAGS@
+
 plugin_LTLIBRARIES = 
 if GST_COND
 plugin_LTLIBRARIES += libgstfcdec.la

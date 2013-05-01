@@ -66,6 +66,12 @@ fi
 
 dnl ===
 
+if test "$HAVE_GST" = "no"; then
+   if test "$HAVE_GST1" = "no"; then
+      AC_MSG_ERROR([No GStreamer API found!])
+   fi
+fi
+
 dnl set proper LDFLAGS for plugins
 GST_PLUGIN_LDFLAGS='-module -avoid-version -export-symbols-regex [_]*\(gst_\|Gst\|GST_\).*'
 AC_SUBST(GST_PLUGIN_LDFLAGS)
