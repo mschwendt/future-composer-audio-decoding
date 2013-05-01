@@ -235,14 +235,6 @@ fcdec_negotiate (GstFCDec *fcdec)
   gst_structure_get_int (structure, "channels", &channels);
   fcdec->channels = channels;
 
-  // TODO: ?
-  if (fcdec->bits == 8) {
-      fcdec->zerosample = 0x80;
-  }
-  else {
-      fcdec->zerosample = 0x0000;
-  }
-
   stream_id = gst_pad_create_stream_id (fcdec->srcpad, GST_ELEMENT_CAST (fcdec), NULL);
   gst_pad_push_event (fcdec->srcpad, gst_event_new_stream_start (stream_id));
   g_free (stream_id);
