@@ -422,8 +422,6 @@ gst_fcdec_handle_seek (GstFCDec *fcdec, GstEvent *event)
 static gboolean
 gst_fcdec_sink_event (GstPad *pad, GstObject *parent, GstEvent *event)
 {
-    printf("gst_fcdec_sink_event()\n");
-
   gboolean ret;
   GstFCDec *fcdec;
 
