@@ -403,11 +403,9 @@ gst_fcdec_handle_seek (GstFCDec *fcdec, GstEvent *event)
   GstSegment *seg = gst_segment_new();
   gst_segment_init(seg, GST_FORMAT_TIME);
   gboolean update;
-  gst_segment_do_seek(seg,rate,GST_FORMAT_TIME,GST_SEEK_FLAG_NONE,GST_SEEK_TYPE_NONE,start,GST_SEEK_TYPE_NONE,start,&update);
+  gst_segment_do_seek(seg,rate,GST_FORMAT_TIME,GST_SEEK_FLAG_NONE,GST_SEEK_TYPE_SET,start,GST_SEEK_TYPE_NONE,start,&update);
   gst_pad_push_event (fcdec->srcpad, gst_event_new_segment(seg));
   gst_segment_free(seg);
-  //  gst_pad_push_event (fcdec->srcpad,
-  //                      gst_event_new_new_segment (FALSE, rate, GST_FORMAT_TIME, start, -1, start));
 
   gst_pad_start_task (fcdec->srcpad,
                       (GstTaskFunction) play_loop, fcdec->srcpad, NULL);
