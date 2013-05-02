@@ -182,7 +182,7 @@ fcdec_negotiate (GstFCDec *fcdec)
   GstCaps *allowed;
   GstStructure *structure;
   int rate = 44100;
-  int channels = 2;
+  int channels = 1;
   GstCaps *caps;
   const gchar *str;
   GstAudioFormat format;
