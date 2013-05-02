@@ -91,8 +91,6 @@ static gboolean gst_fcdec_src_convert (GstPad *pad, GstFormat src_format,
 static gboolean gst_fcdec_src_event (GstPad *pad, GstObject *parent, GstEvent *event);
 static gboolean gst_fcdec_src_query (GstPad *pad, GstObject *parent, GstQuery *query);
 
-static gboolean gst_fcdec_set_caps (GstPad *pad, GstCaps *caps);
-
 static void gst_fcdec_get_property (GObject *object, guint prop_id,
     GValue *value, GParamSpec *pspec);
 static void gst_fcdec_set_property (GObject *object, guint prop_id,
@@ -243,12 +241,6 @@ fcdec_negotiate (GstFCDec *fcdec)
 
   return TRUE;
 
-  /* ERRORS */
-nothing_allowed:
-  {
-    GST_DEBUG_OBJECT (fcdec, "could not get allowed caps");
-    return FALSE;
-  }
 invalid_format:
   {
       GST_DEBUG_OBJECT (fcdec, "invalid audio caps");
@@ -377,7 +369,7 @@ gst_fcdec_handle_seek (GstFCDec *fcdec, GstEvent *event)
   GstSeekFlags flags;
   GstFormat format;
   gdouble rate;
-  gint64 start, stop, jumppos;
+  gint64 start, stop;
 
   gst_event_parse_seek (event, &rate, &format, &flags, &starttype, &start,
       &stoptype, &stop);
@@ -452,6 +444,9 @@ gst_fcdec_chain (GstPad *pad, GstObject *parent, GstBuffer *buf)
 
   fcdec = GST_FCDEC (parent);
   ret = gst_buffer_map (buf, &buf_map, GST_MAP_READ);
+  if ( !ret ) {
+      return GST_FLOW_ERROR;
+  }
   size = buf_map.size;
 
   //  g_print ("Have data of size %" G_GSIZE_FORMAT" bytes!\n",
@@ -657,6 +652,8 @@ gst_fcdec_get_property (GObject * object, guint prop_id,
 static void
 gst_fcdec_type_find (GstTypeFind * tf, gpointer ignore)
 {
+    GstCaps *caps;
+
     const guint8 *data = gst_type_find_peek (tf, 0, 5);
     if (data == NULL)
         return;
@@ -665,7 +662,7 @@ gst_fcdec_type_find (GstTypeFind * tf, gpointer ignore)
     if (fc14dec_detect(decoder,(void*)data,5)) {
         gchar ourtype[] = OUR_MIME_TYPE;
         GST_DEBUG ("suggesting mime type %s", ourtype);
-        GstCaps *caps = gst_caps_new_simple (ourtype, NULL);
+        caps = gst_caps_new_simple (ourtype, NULL, NULL);
         gst_type_find_suggest (tf, GST_TYPE_FIND_MAXIMUM, caps);
         gst_caps_unref (caps);
     }
@@ -682,7 +679,7 @@ fcdec_init (GstPlugin * plugin)
   GST_DEBUG_CATEGORY_INIT (gst_fcdec_debug, "fcdec",
       0, "Future Composer decoder");
 
-  GstCaps *caps = gst_caps_new_simple(OUR_MIME_TYPE,NULL);
+  GstCaps *caps = gst_caps_new_simple(OUR_MIME_TYPE,NULL,NULL);
   gst_type_find_register (plugin, OUR_MIME_TYPE, GST_RANK_PRIMARY,
                           gst_fcdec_type_find, NULL, caps, NULL, NULL);
   gst_caps_unref(caps);
