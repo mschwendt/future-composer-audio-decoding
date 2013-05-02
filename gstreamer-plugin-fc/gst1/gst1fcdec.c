@@ -142,7 +142,6 @@ gst_fcdec_init (GstFCDec *fcdec)
   fcdec->sinkpad = gst_pad_new_from_static_template (&sink_factory, "sink");
   gst_pad_set_chain_function (fcdec->sinkpad, gst_fcdec_chain);
   gst_pad_set_event_function (fcdec->sinkpad, gst_fcdec_sink_event);
-  GST_PAD_SET_PROXY_CAPS (fcdec->sinkpad);
   gst_element_add_pad (GST_ELEMENT (fcdec), fcdec->sinkpad);
 
   fcdec->srcpad = gst_pad_new_from_static_template (&src_factory, "src");
@@ -183,24 +182,22 @@ fcdec_negotiate (GstFCDec *fcdec)
   GstCaps *allowed;
   GstStructure *structure;
   int rate = 44100;
-  int channels = 1;
+  int channels = 2;
   GstCaps *caps;
   const gchar *str;
   GstAudioFormat format;
   gchar *stream_id;
 
-  allowed = gst_pad_get_allowed_caps (fcdec->srcpad);
-  if (!allowed) {
-      goto nothing_allowed;
-  }
-  allowed = gst_caps_normalize (allowed);
-  GST_DEBUG_OBJECT (fcdec, "allowed caps: %" GST_PTR_FORMAT, allowed);
+  allowed = gst_pad_get_pad_template_caps (fcdec->srcpad);
+  allowed = gst_caps_make_writable (allowed);
 
+  GST_DEBUG_OBJECT (fcdec, "allowed caps: %" GST_PTR_FORMAT, allowed);
+  allowed = gst_caps_normalize (allowed);
   structure = gst_caps_get_structure (allowed, 0);
 
   str = gst_structure_get_string (structure, "format");
   if (str == NULL) {
-    goto invalid_format;
+      goto invalid_format;
   }
 
   format = gst_audio_format_from_string (str);
@@ -352,17 +349,18 @@ start_play_file(GstFCDec *fcdec)
                            ("Could not load FC module"), ("Could not load FC module"));
         return FALSE;
     }
-
+    /*
     if (!fcdec_negotiate (fcdec)) {
         GST_ELEMENT_ERROR (fcdec, CORE, NEGOTIATION,
                            ("Could not negotiate format"), ("Could not negotiate format"));
         return FALSE;
     }
+    */
 
     //printf("format = %s\n",fc14dec_format_name(fcdec->decoder));
     fcdec->nsecs = 1000*1000*fc14dec_duration(fcdec->decoder);
     fc14dec_mixer_init(fcdec->decoder,fcdec->frequency,fcdec->bits,fcdec->channels,fcdec->zerosample);
-    
+
     seg = gst_segment_new();
     gst_segment_init(seg, GST_FORMAT_TIME);
     gst_pad_push_event (fcdec->srcpad, gst_event_new_segment(seg));
@@ -427,8 +425,12 @@ gst_fcdec_sink_event (GstPad *pad, GstObject *parent, GstEvent *event)
   case GST_EVENT_SEGMENT:
       ret = TRUE;
       break;
-    case GST_EVENT_CAPS:
-      ret = gst_pad_push_event (fcdec->srcpad, event);
+  case GST_EVENT_CAPS:
+      ret = fcdec_negotiate(fcdec);
+      if (!ret) {
+          GST_ELEMENT_ERROR (fcdec, CORE, NEGOTIATION,
+                             ("Could not negotiate format"), ("Could not negotiate format"));
+      }
       break;
     default:
       ret = gst_pad_event_default (pad, parent, event);
@@ -606,7 +608,7 @@ gst_fcdec_src_query (GstPad *pad, GstObject *parent, GstQuery *query)
           gst_query_set_duration (query, format, val);
       }
       break;
-  case GST_QUERY_SEEKING:
+      //case GST_QUERY_SEEKING:
       //break;
   default:
       ret = gst_pad_query_default (pad, parent, query);
